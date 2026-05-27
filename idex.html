@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Когда цветут розы в Эшфорде</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --bg-deep:    #0f0a06;
+      --bg-card:    #1c1209;
+      --bg-page:    #fdf6ec;
+      --gold:       #d4a855;
+      --gold-dim:   #a07838;
+      --gold-pale:  #f0d898;
+      --rose:       #c0566a;
+      --rose-pale:  #e8a0b0;
+      --cream:      #fdf6ec;
+      --ink:        #1a1008;
+      --ink-mid:    #3d2a18;
+      --ink-soft:   #5a3f28;
+      --sepia:      #7a5535;
+      --border:     rgba(212,168,85,0.25);
+      --shadow:     rgba(0,0,0,0.6);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg-deep);
+      font-family: 'Lora', serif;
+      overscroll-behavior: none;
+    }
+
+    /* ═══════════════════════════
+       OUTER SHELL
+    ═══════════════════════════ */
+    #shell {
+      width: 100vw;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background:
+              radial-gradient(ellipse 80% 60% at 50% 30%, #2a1505 0%, #0f0a06 100%);
+      position: relative;
+    }
+
+    /* ambient candle glow top */
+    #shell::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 300px; height: 180px;
+      background: radial-gradient(ellipse, rgba(212,168,85,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════
+       PROGRESS BAR
+    ═══════════════════════════ */
+    #progress {
+      position: absolute;
+      top: 0; left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--rose), var(--gold));
+      border-radius: 0 3px 0 0;
+      transition: width 0.5s ease;
+      z-index: 99;
+      box-shadow: 0 0 8px rgba(212,168,85,0.5);
+    }
+
+    /* ═══════════════════════════
+       BOOK
+    ═══════════════════════════ */
+    #book {
+      position: relative;
+      width: min(400px, 94vw);
+      height: min(660px, 86dvh);
+      z-index: 1;
+      /* book shadow */
+      filter: drop-shadow(0 24px 48px rgba(0,0,0,0.8))
+      drop-shadow(0 8px 16px rgba(0,0,0,0.6));
+    }
+
+    /* spine */
+    #book::before {
+      content: '';
+      position: absolute;
+      top: 6px; bottom: 6px;
+      left: -10px;
+      width: 12px;
+      background: linear-gradient(to right, #0a0604, #1e0e08, #0a0604);
+      border-radius: 3px 0 0 3px;
+      z-index: 0;
+    }
+
+    /* ═══════════════════════════
+       PAGES
+    ═══════════════════════════ */
+    .page {
+      position: absolute; inset: 0;
+      background: var(--bg-page);
+      border-radius: 2px 10px 10px 2px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform: translateX(40px);
+      /* subtle page lines */
+      background-image:
+              linear-gradient(var(--bg-page) 0%, #f7edd8 100%);
+    }
+
+    .page.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(0);
+    }
+
+    .page.leaving {
+      opacity: 0;
+      transform: translateX(-40px);
+      pointer-events: none;
+    }
+
+    /* scrollable inner */
+    .page-scroll {
+      position: absolute; inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--gold-dim) transparent;
+      /* bottom padding for nav */
+      padding-bottom: 80px;
+    }
+    .page-scroll::-webkit-scrollbar { width: 3px; }
+    .page-scroll::-webkit-scrollbar-track { background: transparent; }
+    .page-scroll::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+    /* left binding shadow */
+    .page-scroll::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 20px; height: 100%;
+      background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* ═══════════════════════════
+       COVER PAGE
+    ═══════════════════════════ */
+    #p0 {
+      background: linear-gradient(155deg, #3a0f1c 0%, #1c0810 45%, #100609 100%) !important;
+      background-image: none !important;
+    }
+
+    .cover-wrap {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decorative border */
+    .cover-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(212,168,85,0.3);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+    .cover-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 20px;
+      border: 1px solid rgba(212,168,85,0.12);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .cv-top {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 5px;
+      color: var(--gold);
+      opacity: 0.7;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      animation: fadeUp 0.8s 0.2s both;
+    }
+
+    .cv-ornament {
+      color: var(--gold);
+      font-size: 22px;
+      letter-spacing: 10px;
+      margin-bottom: 18px;
+      opacity: 0.65;
+      animation: fadeUp 0.8s 0.3s both;
+    }
+
+    .cv-line {
+      width: 70px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 22px;
+      animation: fadeUp 0.8s 0.35s both;
+    }
+
+    .cv-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 7.5vw, 32px);
+      font-weight: 500;
+      color: #fff;
+      text-align: center;
+      line-height: 1.35;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 30px rgba(212,168,85,0.25);
+      animation: fadeUp 0.8s 0.45s both;
+    }
+
+    .cv-title span {
+      font-style: italic;
+      color: var(--gold-pale);
+    }
+
+    .cv-rose {
+      font-size: 28px;
+      margin: 18px 0;
+      animation: fadeUp 0.8s 0.55s both;
+      filter: drop-shadow(0 0 10px rgba(192,86,106,0.5));
+    }
+
+    .cv-quote {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 13.5px;
+      color: rgba(240,216,152,0.75);
+      text-align: center;
+      line-height: 1.75;
+      max-width: 240px;
+      margin-bottom: 28px;
+      animation: fadeUp 0.8s 0.65s both;
+    }
+
+    .cv-divider {
+      width: 100px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 20px;
+      animation: fadeUp 0.8s 0.7s both;
+    }
+
+    .cv-by {
+      font-family: 'Cinzel', serif;
+      font-size: 8.5px;
+      letter-spacing: 3.5px;
+      color: var(--gold);
+      opacity: 0.6;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      animation: fadeUp 0.8s 0.75s both;
+    }
+
+    .cv-author {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 22px;
+      color: var(--gold-pale);
+      animation: fadeUp 0.8s 0.85s both;
+    }
+
+    /* ═══════════════════════════
+       BODY PAGES TYPOGRAPHY
+    ═══════════════════════════ */
+    .inner {
+      padding: 36px 26px 20px;
+    }
+
+    /* page header strip */
+    .pg-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(122,85,53,0.2);
+    }
+
+    .pg-header-label {
+      font-family: 'Cinzel', serif;
+      font-size: 8.5px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--sepia);
+    }
+
+    .pg-header-dot {
+      width: 4px; height: 4px;
+      background: var(--gold-dim);
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    /* section titles */
+    .section-tag {
+      font-family: 'Cinzel', serif;
+      font-size: 8.5px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--rose);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(20px, 5.5vw, 26px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--ink);
+      text-align: center;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+
+    .title-rule {
+      width: 50px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      margin: 0 auto 22px;
+    }
+
+    /* body text — THE KEY: dark ink on cream, large and readable */
+    .txt {
+      font-family: 'Lora', serif;
+      font-size: 16.5px;
+      line-height: 1.95;
+      color: var(--ink);
+      text-align: justify;
+      hyphens: auto;
+      margin-bottom: 18px;
+    }
+
+    .txt em {
+      font-style: italic;
+      color: var(--ink-mid);
+    }
+
+    /* drop cap */
+    .drop::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 62px;
+      font-weight: 700;
+      float: left;
+      line-height: 0.78;
+      margin-right: 7px;
+      margin-top: 10px;
+      color: var(--rose);
+    }
+
+    /* ornament break */
+    .orn {
+      text-align: center;
+      color: var(--gold-dim);
+      font-size: 14px;
+      letter-spacing: 10px;
+      margin: 26px 0;
+      opacity: 0.7;
+    }
+
+    /* dialogue */
+    .dlg {
+      margin: 16px 0;
+      padding: 14px 18px;
+      background: rgba(122,85,53,0.06);
+      border-left: 3px solid var(--gold-dim);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .dlg-who {
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--sepia);
+      margin-bottom: 5px;
+    }
+
+    .dlg p {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--ink-mid);
+    }
+
+    /* letter */
+    .letter {
+      background: rgba(122,85,53,0.05);
+      border: 1px solid rgba(122,85,53,0.2);
+      border-radius: 6px;
+      padding: 20px 22px;
+      margin: 22px 0;
+      position: relative;
+    }
+
+    .letter::before {
+      content: '✉';
+      position: absolute;
+      top: -13px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-page);
+      padding: 0 10px;
+      font-size: 16px;
+      color: var(--gold-dim);
+    }
+
+    .letter p {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 15.5px;
+      line-height: 1.9;
+      color: var(--ink-mid);
+    }
+
+    /* scene break */
+    .scene {
+      text-align: center;
+      margin: 28px 0;
+      font-size: 18px;
+      color: var(--gold-dim);
+      opacity: 0.5;
+    }
+
+    /* epigraph */
+    .epigraph {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--sepia);
+      text-align: center;
+      padding: 14px 24px;
+      margin: 0 0 24px;
+      border-top: 1px solid rgba(122,85,53,0.2);
+      border-bottom: 1px solid rgba(122,85,53,0.2);
+      line-height: 1.75;
+    }
+
+    /* page number */
+    .pgnum {
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--sepia);
+      opacity: 0.5;
+      margin-top: 32px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(122,85,53,0.15);
+    }
+
+    /* part title page */
+    .part-page {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 32px;
+    }
+
+    /* cliffhanger */
+    .cliff {
+      background: linear-gradient(135deg,
+      rgba(192,86,106,0.08),
+      rgba(212,168,85,0.08));
+      border: 1px solid rgba(192,86,106,0.22);
+      border-radius: 8px;
+      padding: 24px 22px;
+      margin: 26px 0;
+      text-align: center;
+    }
+
+    .cliff p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 17px;
+      color: var(--ink-mid);
+      line-height: 1.8;
+    }
+
+    .cliff-end {
+      font-family: 'Cinzel', serif;
+      font-size: 8.5px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-top: 14px;
+      display: block;
+    }
+
+    /* finale box */
+    .finale-box {
+      background: rgba(192,86,106,0.06);
+      border: 1px solid rgba(192,86,106,0.18);
+      border-radius: 8px;
+      padding: 20px 22px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    /* ═══════════════════════════
+       NAVIGATION
+    ═══════════════════════════ */
+    #nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      background: linear-gradient(to top, rgba(15,10,6,0.98) 60%, transparent);
+      z-index: 50;
+      gap: 10px;
+    }
+
+    .nbtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(212,168,85,0.12);
+      border: 1px solid rgba(212,168,85,0.3);
+      color: var(--gold-pale);
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      padding: 10px 16px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.25s;
+      min-width: 82px;
+      min-height: 42px;
+      backdrop-filter: blur(6px);
+    }
+
+    .nbtn:active {
+      background: rgba(212,168,85,0.25);
+      transform: scale(0.96);
+    }
+
+    .nbtn:disabled {
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    .nbtn svg {
+      width: 14px; height: 14px;
+      stroke: var(--gold);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    #indicator {
+      flex: 1;
+      text-align: center;
+    }
+
+    #ind-text {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 12.5px;
+      color: var(--gold);
+      opacity: 0.85;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    #ind-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(212,168,85,0.25);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .dot.on {
+      background: var(--gold);
+      width: 16px;
+      border-radius: 3px;
+    }
+
+    /* ═══════════════════════════
+       PART SEPARATOR
+    ═══════════════════════════ */
+    .part-num {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--sepia);
+      margin-bottom: 14px;
+    }
+
+    .part-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1.4;
+      margin-bottom: 14px;
+    }
+
+    .part-sub {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 13.5px;
+      color: var(--sepia);
+      line-height: 1.8;
+      max-width: 260px;
+      margin: 0 auto 28px;
+    }
+
+    .part-era {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+    }
+
+    /* ═══════════════════════════
+       ANIMATIONS
+    ═══════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* swipe hint */
+    #hint {
+      position: absolute;
+      bottom: 74px;
+      left: 50%; transform: translateX(-50%);
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 11.5px;
+      color: var(--gold);
+      opacity: 0;
+      animation: hintAnim 4s 1.5s ease forwards;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 60;
+    }
+    @keyframes hintAnim {
+      0%{opacity:0} 15%{opacity:0.7} 80%{opacity:0.7} 100%{opacity:0}
+    }
+  </style>
+</head>
+<body>
+
+<div id="shell">
+  <div id="progress"></div>
+
+  <div id="book">
+
+    <!-- ══════════════════ PAGE 0 · COVER ══════════════════ -->
+    <div class="page active" id="p0">
+      <div class="cover-wrap">
+        <div class="cv-top">Роман в четырёх частях</div>
+        <div class="cv-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+        <div class="cv-line"></div>
+        <h1 class="cv-title">Когда цветут<br><span>розы в Эшфорде</span></h1>
+        <div class="cv-rose">🌹</div>
+        <p class="cv-quote">
+          «Сердце — не та вещь,<br>
+          которую отдают дважды.<br>
+          Но судьба, увы,<br>не спрашивает.»
+        </p>
+        <div class="cv-divider"></div>
+        <div class="cv-by">Сочинение</div>
+        <div class="cv-author">Bilal</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 1 · ABOUT AUTHOR ══════════════════ -->
+    <div class="page" id="p1">
+      <div class="page-scroll">
+        <div class="inner">
+          <div class="pg-header">
+            <div class="pg-header-dot"></div>
+            <div class="pg-header-label">Об авторе</div>
+            <div class="pg-header-dot"></div>
+          </div>
+
+          <div class="section-tag">Bilal</div>
+          <h2 class="section-title">Слово об авторе</h2>
+          <div class="title-rule"></div>
+
+          <p class="txt drop">
+            Есть люди, которые рождаются с особым даром — видеть красоту там, где другие проходят мимо. Билал принадлежит именно к таким людям. С ранних лет он замечал в жизни то, что ускользает от большинства: изящество простого разговора, волшебство случайной встречи, глубину взгляда, брошенного через переполненную залу.
+          </p>
+
+          <p class="txt">
+            Его перу близки эпохи, когда слова писали при свете свечи, когда чувства не объявляли вслух, а прятали в складках письма или в едва заметной улыбке. Он убеждён: <em>истинная романтика никогда не устаревает.</em>
+          </p>
+
+          <div class="orn">— ✦ —</div>
+
+          <p class="txt">
+            «Когда цветут розы в Эшфорде» — роман, написанный в духе великой Джейн Остин. Четыре части, четыре сезона чувств. История любви, которая не желает идти прямым путём. Интриги, недоразумения, тайны, скрытые за безупречными манерами, — и в конце неожиданный поворот, которого никто не ждал.
+          </p>
+
+          <p class="txt">
+            Билал верит: каждый человек заслуживает своей истории. И эта — написана с теплом и огнём.
+          </p>
+
+          <div class="orn">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+          <p class="txt" style="text-align:center; font-style:italic; font-size:15px; color:var(--sepia);">
+            «Я пишу о людях, какими они могли бы быть,<br>
+            если бы решились быть честными<br>
+            хотя бы с собственным сердцем.»
+          </p>
+          <p class="txt" style="text-align:center; font-size:14px; color:var(--gold-dim); margin-top:4px;">— Bilal</p>
+
+          <div class="pgnum">— i —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 2 · PART I TITLE ══════════════════ -->
+    <div class="page" id="p2">
+      <div class="page-scroll">
+        <div class="part-page">
+          <div style="font-size:28px; color:var(--gold-dim); letter-spacing:10px; margin-bottom:28px; opacity:0.5;">❧ ❧ ❧</div>
+          <div class="part-num">Часть первая</div>
+          <div class="part-title">Приезд незнакомца</div>
+          <div class="title-rule" style="width:70px; margin:0 auto 22px;"></div>
+          <p class="part-sub">
+            В которой тихий Эшфорд<br>
+            вдруг перестаёт быть тихим,<br>
+            а сердце одной молодой дамы —<br>
+            <em>спокойным.</em>
+          </p>
+          <div style="font-size:34px; margin:20px 0; opacity:0.4;">🌿</div>
+          <div class="part-era">Эшфорд · Осень 1814</div>
+        </div>
+        <div class="pgnum" style="margin: 0 26px 20px;">— 1 —</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 3 · CH. I ══════════════════ -->
+    <div class="page" id="p3">
+      <div class="page-scroll">
+        <div class="inner">
+          <div class="pg-header">
+            <div class="pg-header-dot"></div>
+            <div class="pg-header-label">Глава I</div>
+            <div class="pg-header-dot"></div>
+          </div>
+
+          <div class="section-tag">Глава первая</div>
+          <h2 class="section-title">Новость, которую<br>привезли с почтой</h2>
+          <div class="title-rule"></div>
+
+          <p class="txt drop">
+            Осень пришла в Эшфорд неспешно и с достоинством, как и подобает гостье, уверенной в своём праве. Липовая аллея перед усадьбой Холлоуэй пожелтела первой — что всегда принималось местными жителями за добрый знак.
+          </p>
+
+          <p class="txt">
+            Мисс Элиза Холлоуэй стояла у окна библиотеки и смотрела, как ветер играет опавшими листьями. Ей было двадцать три года. В Лондоне её не считали бы красавицей — но в Эшфорде называли <em>замечательной</em>, что, по мнению Элизы, звучало гораздо приятнее.
+          </p>
+
+          <p class="txt">
+            — Элиза! — Голос миссис Холлоуэй прорезал тишину дома. — Элиза, иди сюда немедленно! Пришло письмо от тёти Пруденс.
+          </p>
+
+          <p class="txt">
+            Элиза отложила книгу — <em>«Наблюдения о природе растений»</em>, интересную, но не срочную — и без спешки вышла в гостиную.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Миссис Холлоуэй</div>
+            <p>— Она пишет, что племянник её мужа, некий мистер Эдвард Рейн, снял усадьбу Клиффдейл на полгода. Полгода, Элиза! И говорят, у него состояние не менее четырёх тысяч в год.</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Элиза</div>
+            <p>— Маменька, не думаю, что его состояние каким-либо образом касается нашего семейства.</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Миссис Холлоуэй</div>
+            <p>— Не думаешь? Не думаешь! У тебя три незамужние сестры. <em>Ты</em> не думаешь, а я думаю за всех нас.</p>
+          </div>
+
+          <p class="txt">
+            Элиза не нашла что ответить — не потому что маменька была права, а потому что спорить с ней было занятием заведомо бесполезным.
+          </p>
+
+          <div class="pgnum">— 2 —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 4 · CH. I cont. ══════════════════ -->
+    <div class="page" id="p4">
+      <div class="page-scroll">
+        <div class="inner">
+          <div class="pg-header">
+            <div class="pg-header-dot"></div>
+            <div class="pg-header-label">Глава I · продолжение</div>
+            <div class="pg-header-dot"></div>
+          </div>
+
+          <p class="txt drop">
+            В последующие три дня о мистере Рейне было сказано в доме Холлоуэй больше, чем об иных давних знакомых за целый год. Младшая сестра Дот утверждала, что он непременно молод и строен. Средняя — Констанс — полагала, что он скучен, как все богатые холостяки. Агнес молчала, но краснела всякий раз, когда его имя упоминалось за обедом.
+          </p>
+
+          <p class="txt">
+            Элиза наблюдала за сёстрами с нежностью и лёгким весельем. Она давно решила: не выйдет замуж по расчёту. Если и полюбит — то по-настоящему, или не полюбит вовсе.
+          </p>
+
+          <p class="txt">
+            Мысль эта казалась ей ясной и разумной. До тех пор, пока в пятницу утром она не поехала верхом через Лесной луг — и не столкнулась лицом к лицу с незнакомцем на вороном коне.
+          </p>
+
+          <div class="scene">⁂</div>
+
+          <p class="txt">
+            Он въезжал из-за поворота, когда она выезжала на дорогу. Её лошадь испугалась, встала на дыбы. Элиза удержалась — чудом и характером.
+          </p>
+
+          <p class="txt">
+            Незнакомец тут же осадил коня.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Незнакомец</div>
+            <p>— Прошу прощения, сударыня. Целиком моя вина. Я не знал этой дороги.</p>
+          </div>
+
+          <p class="txt">
+            Голос был тихий, но чёткий. Элиза выпрямилась с достоинством — даже после того, как едва не упала с лошади — и посмотрела на него.
+          </p>
+
+          <p class="txt">
+            Лет тридцати. Лицо <em>интересное</em>, а не красивое: резкие черты, тёмные глаза, в которых мелькало что-то похожее на сдержанное беспокойство. Одет хорошо, без щегольства.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Элиза</div>
+            <p>— Вы правы — ваша. Но раз вы это признаёте, можно считать, что мы квиты.</p>
+          </div>
+
+          <p class="txt">
+            Он слегка удивился — она это почувствовала. Потом, едва заметно, — улыбнулся.
+          </p>
+
+          <div class="pgnum">— 3 —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 5 · CH. II ══════════════════ -->
+    <div class="page" id="p5">
+      <div class="page-scroll">
+        <div class="inner">
+          <div class="pg-header">
+            <div class="pg-header-dot"></div>
+            <div class="pg-header-label">Глава II</div>
+            <div class="pg-header-dot"></div>
+          </div>
+
+          <div class="section-tag">Глава вторая</div>
+          <h2 class="section-title">Бал у леди Стэнтон</h2>
+          <div class="title-rule"></div>
+
+          <div class="epigraph">
+            «Бал — это битва, в которой оружием служат улыбки,<br>
+            а ранения не видны снаружи.»
+          </div>
+
+          <p class="txt drop">
+            Каждую осень леди Стэнтон давала бал в Стэнтон-холле. В этом году бал обещал быть особенным: новый сосед должен был появиться в обществе официально. Разговоры о нём начались раньше, чем упал первый лист.
+          </p>
+
+          <p class="txt">
+            Элиза надела серое платье из тафты — простое, но хорошо сшитое. Дот убеждала взять голубое, «то, что с лентами», но Элиза предпочитала, чтобы её замечали не сразу.
+          </p>
+
+          <p class="txt">
+            Зал был залит свечным светом. Оркестр настраивал инструменты. Миссис Холлоуэй немедленно углубилась в разговор с соседками, которые, судя по всему, уже всё знали о мистере Рейне, включая масть его лошади.
+          </p>
+
+          <div class="scene">⁂</div>
+
+          <p class="txt">
+            Он вошёл в половине девятого. Один — без дамы. Что было тут же замечено всеми матерями в зале.
+          </p>
+
+          <p class="txt">
+            Элиза увидела его через плечо Констанс — и почувствовала лёгкий укол неловкости. Это был тот самый незнакомец с дороги. Значит — <em>мистер Эдвард Рейн.</em>
+          </p>
+
+          <p class="txt">
+            Он оглядел залу с видом человека, который привык бывать в обществе, но не дорожит этим особо. Потом его взгляд остановился на ней.
+          </p>
+
+          <p class="txt">
+            Элиза не отвела глаз. Это было бы невежливо.
+          </p>
+
+          <div class="pgnum">— 4 —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 6 · CH. II cont. ══════════════════ -->
+    <div class="page" id="p6">
+      <div class="page-scroll">
+        <div class="inner">
+          <div class="pg-header">
+            <div class="pg-header-dot"></div>
+            <div class="pg-header-label">Глава II · продолжение</div>
+            <div class="pg-header-dot"></div>
+          </div>
+
+          <p class="txt drop">
+            Леди Стэнтон подвела мистера Рейна к семейству Холлоуэй с торжественным видом человека, совершающего доброе дело, приятное прежде всего себе.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Леди Стэнтон</div>
+            <p>— Мистер Рейн, позвольте представить вам миссис Холлоуэй и её очаровательных дочерей. Мисс Агнес, мисс Элиза, мисс Констанс и мисс Дот.</p>
+          </div>
+
+          <p class="txt">
+            Он поклонился. Взгляд задержался на Элизе ровно на секунду дольше, чем на остальных. Она решила, что это ей показалось.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— Кажется, мы уже имели честь встретиться, мисс Холлоуэй. Хотя обстоятельства той встречи были несколько... необычными.</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Элиза</div>
+            <p>— Вполне обычными для Лесного луга в пятницу утром, сэр. Там часто ездят верхом.</p>
+          </div>
+
+          <p class="txt">
+            Дот прыснула. Миссис Холлоуэй незаметно наступила ей на ногу.
+          </p>
+
+          <div class="scene">⁂</div>
+
+          <p class="txt">
+            Перед ужином мистер Рейн подошёл к ней снова.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— Мисс Холлоуэй, осмелюсь спросить: следующий танец ещё не обещан?</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Элиза</div>
+            <p>— Нет, сэр.</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— Тогда позвольте считать это исправлением ещё одного долга.</p>
+          </div>
+
+          <p class="txt">
+            Она засмеялась — коротко, почти против воли. Он помнил её слова с дороги. <em>Он запомнил их дословно.</em>
+          </p>
+
+          <div class="pgnum">— 5 —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 7 · CH. III ══════════════════ -->
+    <div class="page" id="p7">
+      <div class="page-scroll">
+        <div class="inner">
+          <div class="pg-header">
+            <div class="pg-header-dot"></div>
+            <div class="pg-header-label">Глава III</div>
+            <div class="pg-header-dot"></div>
+          </div>
+
+          <div class="section-tag">Глава третья</div>
+          <h2 class="section-title">То, чего не следовало<br>замечать</h2>
+          <div class="title-rule"></div>
+
+          <p class="txt drop">
+            Танец оказался слишком коротким. Это был контрданс — оживлённый, с частой сменой партнёров. Всякий раз, когда фигура разводила их, Элиза думала: <em>вот сейчас он скажет что-то пустое, дежурное, и всё окажется обычным.</em> Но когда они сходились снова, он говорил что-то неожиданное.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— Вы читаете Гилберта Уайта, мисс Холлоуэй?</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Элиза</div>
+            <p>— Откуда вы знаете?</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— В пятницу у вас было измазано чернилами правое запястье. Такое бывает, когда пишут заметки на полях. Гилберт Уайт вызывает много заметок.</p>
+          </div>
+
+          <p class="txt">
+            Элиза посмотрела на своё запястье — машинально. Сегодня чернил не было.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— Это профессиональная привычка.</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Элиза</div>
+            <p>— Вы врач?</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— Нет. Юрист. Но разница невелика: и те и другие умеют слушать молча.</p>
+          </div>
+
+          <p class="txt">
+            Музыка кончилась. Они поклонились. Он отошёл. Элиза вернулась к сёстрам — и поняла, что не помнит ни одной фигуры танца.
+          </p>
+
+          <div class="scene">⁂</div>
+
+          <p class="txt">
+            На обратном пути миссис Холлоуэй говорила без остановки.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Миссис Холлоуэй</div>
+            <p>— Он танцевал с Агнес первой — знак уважения к старшинству. Но с Элизой — дважды! Хотя нет, один раз... зато как смотрел!</p>
+          </div>
+
+          <p class="txt">
+            Элиза смотрела в темноту за окном кареты. И не спорила.
+          </p>
+
+          <div class="pgnum">— 6 —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 8 · CH. IV ══════════════════ -->
+    <div class="page" id="p8">
+      <div class="page-scroll">
+        <div class="inner">
+          <div class="pg-header">
+            <div class="pg-header-dot"></div>
+            <div class="pg-header-label">Глава IV</div>
+            <div class="pg-header-dot"></div>
+          </div>
+
+          <div class="section-tag">Глава четвёртая</div>
+          <h2 class="section-title">Визит. И кое-что ещё</h2>
+          <div class="title-rule"></div>
+
+          <p class="txt drop">
+            На следующее утро в доме Холлоуэй было необыкновенно оживлённо. Миссис Холлоуэй велела убрать гостиную, поставить свежих цветов и приготовить лучший чай. Агнес надела новую шаль. Дот трижды начёсывала локоны.
+          </p>
+
+          <p class="txt">
+            Элиза взяла книгу и вышла в сад.
+          </p>
+
+          <p class="txt">
+            Она сидела на скамье у розовых кустов — посаженных ещё её бабушкой — когда услышала шаги по гравию. Решив, что это Дот, не обернулась.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Голос</div>
+            <p>— Прошу прощения за вторжение. Мне сказали, что миссис Холлоуэй дома.</p>
+          </div>
+
+          <p class="txt">
+            Это был не Дот.
+          </p>
+
+          <p class="txt">
+            Мистер Рейн стоял в трёх шагах, держа шляпу в руке. При свете дня он выглядел иначе, чем на балу — проще, и от этого почему-то интереснее.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— Не торопитесь. <em>Остин?</em></p>
+          </div>
+
+          <p class="txt">
+            Он кивнул на книгу. Нет — «Наблюдения о природе растений».
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Элиза</div>
+            <p>— Уайт. Мы кажется уже обсуждали это.</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— Значит, вы помните наш разговор.</p>
+          </div>
+
+          <p class="txt">
+            В его голосе не было торжества — только тихая уверенность. Элиза встала.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Элиза</div>
+            <p>— Пройдёмте в дом, мистер Рейн. Маменька будет рада вас видеть.</p>
+          </div>
+
+          <p class="txt">
+            Она пошла по дорожке, не оглядываясь. Он следовал за ней молча. Но Элиза чувствовала его взгляд между лопаток всю дорогу до парадной двери.
+          </p>
+
+          <div class="pgnum">— 7 —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 9 · CH. V ══════════════════ -->
+    <div class="page" id="p9">
+      <div class="page-scroll">
+        <div class="inner">
+          <div class="pg-header">
+            <div class="pg-header-dot"></div>
+            <div class="pg-header-label">Глава V</div>
+            <div class="pg-header-dot"></div>
+          </div>
+
+          <div class="section-tag">Глава пятая</div>
+          <h2 class="section-title">Письмо из Лондона</h2>
+          <div class="title-rule"></div>
+
+          <p class="txt drop">
+            Октябрь принёс дожди и новости. Сначала маленькие: тётя Пруденс приедет на Рождество, дочь соседского доктора обручилась с офицером из Йорка. Потом — большую.
+          </p>
+
+          <p class="txt">
+            Письмо пришло на имя Элизы. Почерк незнаком — размашистый, мужской. Обратный адрес: Лондон, улица Гровнер.
+          </p>
+
+          <div class="letter">
+            <p>
+              Многоуважаемая мисс Холлоуэй,<br><br>
+              Позвольте представиться: меня зовут лорд Фредерик Эшли. Я имею честь быть давним приятелем мистера Рейна и в конце месяца намереваюсь посетить Клиффдейл.<br><br>
+              Слышал о вашем семействе от общих знакомых — в самых лестных выражениях. Искренне надеюсь на знакомство при первой возможности.<br><br>
+              Ваш покорный слуга,<br>
+              лорд Ф. Эшли
+            </p>
+          </div>
+
+          <p class="txt">
+            Элиза прочла письмо трижды. В нём не было ничего предосудительного. И всё же что-то в нём было <em>лишним.</em>
+          </p>
+
+          <p class="txt">
+            Почему незнакомый лорд пишет лично ей? Почему упоминает Рейна так, словно это что-то объясняет? И откуда — от каких знакомых — он мог слышать о ней?
+          </p>
+
+          <p class="txt">
+            Она убрала письмо в ящик стола. Маменьке показывать не стала.
+          </p>
+
+          <div class="pgnum">— 8 —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 10 · CH. VI ══════════════════ -->
+    <div class="page" id="p10">
+      <div class="page-scroll">
+        <div class="inner">
+          <div class="pg-header">
+            <div class="pg-header-dot"></div>
+            <div class="pg-header-label">Глава VI</div>
+            <div class="pg-header-dot"></div>
+          </div>
+
+          <div class="section-tag">Глава шестая</div>
+          <h2 class="section-title">То, что говорят<br>за чашкой чая</h2>
+          <div class="title-rule"></div>
+
+          <p class="txt drop">
+            Лорд Эшли прибыл в пятницу — ровно через три недели. За это время Элиза почти забыла о его письме. Почти.
+          </p>
+
+          <p class="txt">
+            Он оказался моложе, чем она ожидала: лет двадцати восьми, светловолосый, с открытым лицом и громким смехом. Таких называют «обаятельными» — и это было правдой, хотя правдой несколько навязчивой.
+          </p>
+
+          <p class="txt">
+            Леди Стэнтон немедленно устроила чайный вечер. Ради знакомства, как она выразилась, — хотя Элиза подозревала: ради наблюдения.
+          </p>
+
+          <div class="scene">⁂</div>
+
+          <div class="dlg">
+            <div class="dlg-who">Лорд Эшли</div>
+            <p>— Мисс Холлоуэй! Рейн описывал вас так, что я почти разочарован — вы значительно привлекательнее его описания.</p>
+          </div>
+
+          <p class="txt">
+            Ровно тот тип комплимента, который делают мужчины, привыкшие к восторгу. Элиза улыбнулась вежливо.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Элиза</div>
+            <p>— Значит, мистер Рейн говорил обо мне?</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Лорд Эшли</div>
+            <p>— О, весьма сдержанно. Что само по себе красноречиво — Эдвард крайне редко говорит о людях вообще.</p>
+          </div>
+
+          <p class="txt">
+            Мистер Рейн стоял в другом углу комнаты. Но Элиза была почти уверена, что часть его внимания направлена сюда.
+          </p>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— Фредерик говорит много лишнего. Это его давняя привычка.</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Элиза</div>
+            <p>— Это не ответ на мой вопрос.</p>
+          </div>
+
+          <div class="dlg">
+            <div class="dlg-who">Мистер Рейн</div>
+            <p>— Нет. Не ответ.</p>
+          </div>
+
+          <p class="txt">
+            И он не дал ответа. Отошёл к другим гостям — спокойно, точно ничего не произошло. Элиза взяла с полки первую попавшуюся книгу и сделала вид, что читает.
+          </p>
+
+          <div class="pgnum">— 9 —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 11 · CH. VII — CLIFFHANGER ══════════════════ -->
+    <div class="page" id="p11">
+      <div class="page-scroll">
+        <div class="inner">
+          <div class="pg-header">
+            <div class="pg-header-dot"></div>
+            <div class="pg-header-label">Глава VII</div>
+            <div class="pg-header-dot"></div>
+          </div>
+
+          <div class="section-tag">Глава седьмая</div>
+          <h2 class="section-title">Тайна в библиотеке<br>Клиффдейла</h2>
+          <div class="title-rule"></div>
+
+          <p class="txt drop">
+            Через неделю мистер Рейн пригласил всё семейство Холлоуэй осмотреть библиотеку Клиффдейла — известную в округе как одну из лучших. Библиотека оказалась именно такой, какой и должна быть у человека, читающего по-настоящему: немного беспорядочной в деталях, строгой в главном. Книги явно читали — не хранили.
+          </p>
+
+          <p class="txt">
+            Пока сёстры восхищались портретами, а миссис Холлоуэй расспрашивала дворецкого, Элиза медленно шла вдоль полок.
+          </p>
+
+          <p class="txt">
+            И тут она увидела это.
+          </p>
+
+          <p class="txt">
+            Между двумя томами по юриспруденции — тонкая тетрадь в синей обложке. Из неё торчал лист бумаги. Нечаянно задев его, она уронила лист.
+          </p>
+
+          <p class="txt">
+            Это было письмо. Написано мелким почерком. Адресовано — <em>Эдварду.</em> И подписано — женским именем.
+          </p>
+
+          <p class="txt">
+            Элиза не прочла ни слова. Вложила письмо обратно — аккуратно, точно так же, как оно лежало. Отошла от полки.
+          </p>
+
+          <p class="txt">
+            Сердце билось несколько быстрее обычного. Она велела ему остановиться. Оно не послушалось.
+          </p>
+
+          <div class="scene">⁂</div>
+
+          <p class="txt">
+            По дороге домой Дот щебетала о библиотеке, Агнес молчала с мечтательным видом. Элиза смотрела в окно. Дождь начинался.
+          </p>
+
+          <p class="txt" style="font-style:italic; color:var(--ink-mid);">
+            Женское имя. Мелкий почерк. «Эдварду».
+          </p>
+
+          <p class="txt">
+            Всё это не имело к ней никакого отношения. Совершенно никакого.
+          </p>
+
+          <div class="cliff">
+            <p>
+              И вот что было самым странным:<br>
+              если это не имело к ней никакого<br>
+              отношения — почему она всё никак<br>
+              не могла перестать<br>
+              об этом думать?
+            </p>
+            <span class="cliff-end">✦ · · · Продолжение следует · · · ✦</span>
+          </div>
+
+          <div style="text-align:center; margin-top:20px;">
+            <div style="font-family:'Cinzel',serif; font-size:8.5px; letter-spacing:3px; text-transform:uppercase; color:var(--sepia); margin-bottom:8px;">Конец первой части</div>
+            <div style="font-family:'Playfair Display',serif; font-style:italic; font-size:16px; color:var(--ink-mid);">«Приезд незнакомца»</div>
+          </div>
+
+          <div class="pgnum">— 10 —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PAGE 12 · END PAGE ══════════════════ -->
+    <div class="page" id="p12">
+      <div class="page-scroll">
+        <div class="part-page">
+          <div style="font-size:34px; margin-bottom:26px; filter:drop-shadow(0 2px 8px rgba(192,86,106,0.3));">🌹</div>
+
+          <div style="font-family:'Cinzel',serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:var(--sepia); margin-bottom:14px;">Часть I · завершена</div>
+
+          <h2 style="font-family:'Playfair Display',serif; font-size:24px; font-style:italic; font-weight:400; color:var(--ink); line-height:1.45; margin-bottom:18px;">
+            Когда цветут<br>розы в Эшфорде
+          </h2>
+
+          <div class="title-rule" style="width:70px; margin:0 auto 24px;"></div>
+
+          <p style="font-family:'Lora',serif; font-style:italic; font-size:15px; color:var(--sepia); line-height:1.9; max-width:260px; margin:0 auto 28px;">
+            Элиза Холлоуэй встретила его случайно.<br>
+            Узнала неожиданно.<br>
+            И не прочла письма,<br>которое могло изменить всё.<br><br>
+            <em>Вопрос в том — к лучшему ли?</em>
+          </p>
+
+          <div class="finale-box">
+            <div style="font-family:'Cinzel',serif; font-size:8.5px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-dim); margin-bottom:10px;">Далее · Часть вторая</div>
+            <div style="font-family:'Playfair Display',serif; font-style:italic; font-size:19px; color:var(--ink-mid); line-height:1.4;">«Тайны, которые<br>хранят молча»</div>
+          </div>
+
+          <div style="font-family:'Lora',serif; font-style:italic; font-size:12px; color:var(--sepia); margin-top:26px; opacity:0.6;">
+            Bilal · Эшфорд, 1814
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /book -->
+
+  <!-- ══════════════════ NAVIGATION ══════════════════ -->
+  <div id="nav">
+    <button class="nbtn" id="btn-prev" onclick="turn(-1)" disabled>
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Назад
+    </button>
+
+    <div id="indicator">
+      <span id="ind-text">Обложка</span>
+      <div id="ind-dots"></div>
+    </div>
+
+    <button class="nbtn" id="btn-next" onclick="turn(1)">
+      Далее
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+  <div id="hint">← Листайте страницы →</div>
+
+</div><!-- /shell -->
+
+<script>
+  const PAGES = 13;
+  const LABELS = [
+    'Обложка','Об авторе','Часть I',
+    'Гл. I','Гл. I','Гл. II','Гл. II',
+    'Гл. III','Гл. IV','Гл. V','Гл. VI',
+    'Гл. VII','Финал'
+  ];
+
+  let cur = 0, busy = false;
+
+  // build dots
+  const dotsEl = document.getElementById('ind-dots');
+  for(let i = 0; i < PAGES; i++){
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0?' on':'');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  }
+
+  function goTo(n){
+    if(busy || n===cur || n<0 || n>=PAGES) return;
+    busy = true;
+    const dir = n > cur ? 1 : -1;
+    const from = document.getElementById('p'+cur);
+    const to   = document.getElementById('p'+n);
+
+    from.classList.remove('active');
+    from.classList.add('leaving');
+    to.style.transform = dir>0 ? 'translateX(40px)' : 'translateX(-40px)';
+    to.style.opacity = '0';
+    to.classList.add('active');
+    to.scrollTop = 0;
+
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      to.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      to.style.transform = 'translateX(0)';
+      to.style.opacity = '1';
+    }));
+
+    setTimeout(()=>{
+      from.classList.remove('leaving');
+      from.style.transform = '';
+      from.style.opacity = '';
+      from.style.transition = '';
+      to.style.transition = '';
+      cur = n;
+      updateUI();
+      busy = false;
+    }, 420);
+  }
+
+  function turn(d){ goTo(cur + d); }
+
+  function updateUI(){
+    document.getElementById('btn-prev').disabled = cur===0;
+    document.getElementById('btn-next').disabled = cur===PAGES-1;
+    document.getElementById('ind-text').textContent = LABELS[cur]||'';
+    document.querySelectorAll('.dot').forEach((d,i)=>{
+      d.classList.toggle('on', i===cur);
+    });
+    const pct = (cur/(PAGES-1))*100;
+    document.getElementById('progress').style.width = pct+'%';
+  }
+
+  // swipe
+  let sx=0, sy=0;
+  const book = document.getElementById('book');
+  book.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; },{passive:true});
+  book.addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>50) turn(dx<0?1:-1);
+  },{passive:true});
+
+  updateUI();
+</script>
+</body>
+</html>
